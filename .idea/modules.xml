@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/LSTMProject.iml" filepath="$PROJECT_DIR$/.idea/LSTMProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Voice2Draw.iml" filepath="$PROJECT_DIR$/.idea/Voice2Draw.iml" />
     </modules>
   </component>
 </project>

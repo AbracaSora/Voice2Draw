@@ -18,8 +18,8 @@ def SetSize(size):
     v2d.setSize(size)
 
 
-def ReadString(emotion: str, rawString: str):
-    v2d.input(emotion, rawString)
+def EmotionSelect(emotion: str):
+    v2d.appendKeywords(emotion)
 
 
 def StyleSelect(style: str):

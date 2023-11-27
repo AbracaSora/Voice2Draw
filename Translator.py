@@ -11,6 +11,8 @@ class Translator:
         self.to_lang = to_lang
 
     def translate(self, query=None):
+        if query is '':
+            return ''
         salt = random.randint(32768, 65536)
         sign = md5((cfg.TRANS_APPID + query + str(salt) + cfg.TRANS_APIKEY).encode("utf-8")).hexdigest()
 

@@ -17,4 +17,4 @@ class ASR:
         if res['err_no'] == 0:
             return res['result'][0]
         else:
-            return None
+            raise Exception('ASR failed')
