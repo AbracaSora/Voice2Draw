@@ -1,5 +1,18 @@
 from Voice2Draw import Voice2Draw
 from Translator import Translator
+from PyQt5.QtCore import QObject, pyqtSignal
+
+
+class RecordEndSignal(QObject):
+    recordEnd = pyqtSignal(str)
+
+
+class GenerateEndSignal(QObject):
+    generateEnd = pyqtSignal(str)
+
+
+recordEndSignal = RecordEndSignal()
+generateEndSignal = GenerateEndSignal()
 
 trans = Translator('zh', 'en')
 v2d = Voice2Draw()
@@ -8,6 +21,7 @@ v2d = Voice2Draw()
 def ReadWave(path='testset/input.wav'):
     v2d.setPath(path)
     v2d.readWave()
+    recordEndSignal.recordEnd.emit()
 
 
 def ReadWaveFromFile(path):
@@ -36,6 +50,8 @@ def ExtraKeywords(keywords: str):
 def ImageGenerate():
     v2d.generatePrompt()
     v2d.generateImage()
+    # generateEndSignal.generateEnd.emit(v2d.image)
+    generateEndSignal.generateEnd.emit()
     return v2d.image
 
 

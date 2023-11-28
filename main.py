@@ -5,7 +5,12 @@ from PyQt5 import QtWidgets
 from PyQt5 import uic
 import sys
 import pictures_rc
+from threading import Thread
 from Function import *
+
+
+
+
 
 class MainUI(QDialog):
     def __init__(self, stackedWidget):
@@ -14,17 +19,17 @@ class MainUI(QDialog):
         self.setFixedSize(1152, 864)
 
         self.stackedWidget = stackedWidget
-        self.recordButton.clicked.connect(self.test1)
-        self.fileButton.clicked.connect(self.test2)
-        self.exitButton.clicked.connect(self.test3)
+        self.recordButton.clicked.connect(self.ToRecord)
+        self.fileButton.clicked.connect(self.ToUpload)
+        self.exitButton.clicked.connect(self.Exit)
 
-    def test1(self):
+    def ToRecord(self):
         self.stackedWidget.setCurrentIndex(1)
 
-    def test2(self):
+    def ToUpload(self):
         self.stackedWidget.setCurrentIndex(1)
 
-    def test3(self):
+    def Exit(self):
         self.stackedWidget.setCurrentIndex(0)
 
 
@@ -34,8 +39,8 @@ class RecordingUI(QDialog):
         uic.loadUi('Recording.ui', self)
 
         self.stackedWidget = stackedWidget
-        self.recordButton.clicked.connect(self.test1)
-        self.returnButton.clicked.connect(self.test2)
+        self.recordButton.clicked.connect(self.Recording)
+        self.returnButton.clicked.connect(self.Back)
 
         self.animationGroup = QSequentialAnimationGroup()
         self.animationGroup.setLoopCount(500)  # 设置闪烁次数
@@ -58,15 +63,16 @@ class RecordingUI(QDialog):
         self.waitAnimation = QPauseAnimation(900)  # 2秒的等待动画
         self.animationGroup.addAnimation(self.waitAnimation)
 
-    def test1(self):
+    def Recording(self):
+        recordEndSignal.recordEnd.connect(self.NextPage)
         self.animationGroup.start()
-        ReadWave()
-        self.test3()
+        thread = Thread(target=ReadWave)
+        thread.start()
 
-    def test2(self):
+    def Back(self):
         self.stackedWidget.setCurrentIndex(0)
 
-    def test3(self):
+    def NextPage(self):
         self.animationGroup.stop()
         self.stackedWidget.setCurrentIndex(2)
 
@@ -78,13 +84,13 @@ class ParameterUI(QDialog):
         # self.setFixedSize(1800, 1350)
 
         self.stackedWidget = stackedWidget
-        self.startButton.clicked.connect(self.test1)
-        self.returnButton.clicked.connect(self.test2)
+        self.startButton.clicked.connect(self.ToGenerate)
+        self.returnButton.clicked.connect(self.Back)
 
-    def test1(self):
+    def ToGenerate(self):
         self.stackedWidget.setCurrentIndex(3)
 
-    def test2(self):
+    def Back(self):
         self.stackedWidget.setCurrentIndex(0)
 
 
@@ -94,14 +100,14 @@ class WorkingUI(QDialog):
         uic.loadUi('Working.ui', self)
         self.stackedWidget = stackedWidget
 
-        self.workButton.clicked.connect(self.test1)
+        self.workButton.clicked.connect(self.ImageGen)
 
         self.animationGroup = QSequentialAnimationGroup()
         self.animationGroup.setLoopCount(1000)  # 设置闪烁次数
         removeAnimation = []
 
         positions = [QPoint(65, 512), QPoint(256, 512), QPoint(480, 512), QPoint(698, 512), QPoint(928, 512)]
-        for i in (0, 1, 2, 3, 4):
+        for i in range(4):
             iconButton = QPushButton(self)
             iconButton.setGeometry(positions[i].x(), positions[i].y(), 116, 135)
             iconButton.setStyleSheet("background-color: red;")
@@ -119,20 +125,19 @@ class WorkingUI(QDialog):
             moveAnimation.setEndValue(positions[i])
             removeAnimation.append(moveAnimation)
 
-        for i in (0, 1, 2, 3, 4):
+        for i in range(4):
             self.animationGroup.addAnimation(removeAnimation[i])
 
         waitAnimation = QPauseAnimation(700)  # 7ms 的等待动画
         self.animationGroup.addAnimation(waitAnimation)
 
-    def test1(self):
+    def ImageGen(self):
+        generateEndSignal.generateEnd.connect(self.NextPage)
         self.animationGroup.start()
-        ExtraKeywords("a girl is singing")
-        EmotionSelect('happy')
-        ImageGenerate()
-        self.test2()
+        thread = Thread(target=ImageGenerate)
+        thread.start()
 
-    def test2(self):
+    def NextPage(self):
         self.animationGroup.stop()
         self.stackedWidget.setCurrentIndex(4)
 
@@ -143,21 +148,21 @@ class ResultUI(QDialog):
         uic.loadUi('Result.ui', self)
 
         self.stackedWidget = stackedWidget
-        self.saveButton.clicked.connect(self.test1)
-        self.returnButton.clicked.connect(self.test2)
-        self.reworkButton.clicked.connect(self.test3)
-        self.nextButton.clicked.connect(self.test4)
+        self.saveButton.clicked.connect(self.Save)
+        self.returnButton.clicked.connect(self.Back)
+        self.reworkButton.clicked.connect(self.Change)
+        self.nextButton.clicked.connect(self.Next)
 
-    def test1(self):
+    def Save(self):
         self.stackedWidget.setCurrentIndex(0)
 
-    def test2(self):
+    def Back(self):
         self.stackedWidget.setCurrentIndex(0)
 
-    def test3(self):
+    def Change(self):
         self.stackedWidget.setCurrentIndex(2)
 
-    def test4(self):
+    def Next(self):
         self.stackedWidget.setCurrentIndex(4)
 
 
