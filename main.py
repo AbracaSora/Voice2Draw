@@ -1,7 +1,9 @@
 from PyQt5.QtCore import QTimer, QPropertyAnimation, QSequentialAnimationGroup, QParallelAnimationGroup, QPoint, \
     QPauseAnimation
-from PyQt5.QtWidgets import QDialog, QApplication, QStackedWidget, QVBoxLayout, QHBoxLayout, QPushButton
-from PyQt5 import QtWidgets
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QDialog, QApplication, QStackedWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, \
+    QLabel
+from PyQt5 import QtWidgets, QtGui
 from PyQt5 import uic
 import sys
 import pictures_rc
@@ -9,7 +11,16 @@ from threading import Thread
 from Function import *
 
 
+class ParaEndSignal(QObject):
+    paraEndSignal = pyqtSignal(str)
 
+
+class NextPageSignal(QObject):
+    nextPageSignal = pyqtSignal(str)
+
+
+paraEndSignal = ParaEndSignal()
+workEndSignal = NextPageSignal()
 
 
 class MainUI(QDialog):
@@ -88,6 +99,9 @@ class ParameterUI(QDialog):
         self.returnButton.clicked.connect(self.Back)
 
     def ToGenerate(self):
+        Data = {'emotion': self.Emo.checkedButton().text(), 'style': self.Style.checkedButton().text(),
+                'tone': self.Tone.checkedButton().text(), 'prop': self.Prop.checkedButton().text()}
+        DataAnalysis(Data)
         self.stackedWidget.setCurrentIndex(3)
 
     def Back(self):
@@ -97,6 +111,7 @@ class ParameterUI(QDialog):
 class WorkingUI(QDialog):
     def __init__(self, stackedWidget):
         super(WorkingUI, self).__init__()
+        self.imageLabel = None
         uic.loadUi('Working.ui', self)
         self.stackedWidget = stackedWidget
 
@@ -132,31 +147,48 @@ class WorkingUI(QDialog):
         self.animationGroup.addAnimation(waitAnimation)
 
     def ImageGen(self):
+        ExtraKeywords("((Kagamine Rin))")
+        threadIG = Thread(target=ImageGenerate)
         generateEndSignal.generateEnd.connect(self.NextPage)
+        threadIG.start()
         self.animationGroup.start()
-        thread = Thread(target=ImageGenerate)
-        thread.start()
 
     def NextPage(self):
         self.animationGroup.stop()
         self.stackedWidget.setCurrentIndex(4)
+        workEndSignal.nextPageSignal.emit("NextPage")
 
 
 class ResultUI(QDialog):
     def __init__(self, stackedWidget):
         super(ResultUI, self).__init__()
+        self.imageLabel = QLabel(self)
         uic.loadUi('Result.ui', self)
 
+        workEndSignal.nextPageSignal.connect(self.ShowImage)
         self.stackedWidget = stackedWidget
         self.saveButton.clicked.connect(self.Save)
         self.returnButton.clicked.connect(self.Back)
         self.reworkButton.clicked.connect(self.Change)
         self.nextButton.clicked.connect(self.Next)
 
+    def ShowImage(self):
+        image = v2d.image
+        print(image)
+        ImgMap = QtGui.QPixmap(QtGui.QImage.fromData(base64.b64decode(image)))
+        print(ImgMap)
+        self.imageLabel.setGeometry(0, 140, v2d.size[0], v2d.size[1])
+        self.imageLabel.setPixmap(ImgMap.scaled(self.imageLabel.width(), self.imageLabel.height()))
+        self.imageLabel.show()
+
     def Save(self):
+        Path = QFileDialog.getSaveFileName(self, 'Save File', '', '*.png')
+        print(Path[0])
+        SaveImage(Path[0])
         self.stackedWidget.setCurrentIndex(0)
 
     def Back(self):
+        v2d.keywords = []
         self.stackedWidget.setCurrentIndex(0)
 
     def Change(self):

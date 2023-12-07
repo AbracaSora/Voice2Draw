@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="background">
+    <file>UIpictures/choose.png</file>
+    <file>UIpictures/change_background_0x_0y_1800w1350h(1).png</file>
     <file>UIpictures/recordingicon.png</file>
     <file>UIpictures/workingicon.png</file>
     <file>UIpictures/________________1420x1220y380w110h.png</file>

@@ -4,12 +4,6 @@ import requests
 import config as cfg
 
 
-def _save_encoded_image(b64_image: str, output_path: str):
-    with open(output_path, 'wb') as image_file:
-        image_file.write(base64.b64decode(b64_image))
-    return b64_image
-
-
 def _submit_post(url: str, Data: dict):
     return requests.post(url, data=json.dumps(Data))
 
@@ -43,5 +37,5 @@ class ImageGenerator:
                 'height': self.height,
                 'cfg_scale': cfg_scale}
         Response = _submit_post(self.url, Data)
-        image = _save_encoded_image(Response.json()['images'][0], 'txt2img/' + name + '.png')
+        image = Response.json()['images'][0]
         return image, json.loads(Response.json()['info'])['seed']

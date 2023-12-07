@@ -44,7 +44,6 @@ class Voice2Draw:
         r.open()
         r.read(self.path)
         r.close()
-        self.input(Emotion(self.path), ASR(self.path).translate())
 
     def readWaveFromFile(self, path):
         self.path = path
