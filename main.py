@@ -174,9 +174,7 @@ class ResultUI(QDialog):
 
     def ShowImage(self):
         image = v2d.image
-        print(image)
         ImgMap = QtGui.QPixmap(QtGui.QImage.fromData(base64.b64decode(image)))
-        print(ImgMap)
         self.imageLabel.setGeometry(0, 140, v2d.size[0], v2d.size[1])
         self.imageLabel.setPixmap(ImgMap.scaled(self.imageLabel.width(), self.imageLabel.height()))
         self.imageLabel.show()
