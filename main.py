@@ -10,6 +10,8 @@ import pictures_rc
 from threading import Thread
 from Function import *
 
+app = QApplication(sys.argv)
+
 
 class ParaEndSignal(QObject):
     paraEndSignal = pyqtSignal(str)
@@ -42,6 +44,7 @@ class MainUI(QDialog):
 
     def Exit(self):
         self.stackedWidget.setCurrentIndex(0)
+        sys.exit(app.exec())
 
 
 class RecordingUI(QDialog):
@@ -147,7 +150,6 @@ class WorkingUI(QDialog):
         self.animationGroup.addAnimation(waitAnimation)
 
     def ImageGen(self):
-        ExtraKeywords("((Kagamine Rin))")
         threadIG = Thread(target=ImageGenerate)
         generateEndSignal.generateEnd.connect(self.NextPage)
         threadIG.start()
@@ -197,7 +199,6 @@ class ResultUI(QDialog):
 
 
 def show_MainUI():
-    app = QApplication(sys.argv)
     stackedWidget = QStackedWidget()
     mainUI = MainUI(stackedWidget)
     recordingUI = RecordingUI(stackedWidget)
@@ -213,6 +214,7 @@ def show_MainUI():
 
     # stackedWidget.currentChanged.connect(lambda index: stackedWidget.widget(index).adjustSize())
     stackedWidget.show()
+
     sys.exit(app.exec())
 
 
