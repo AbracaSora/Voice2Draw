@@ -87,6 +87,7 @@ class RecordingUI(QDialog):
         self.stackedWidget.setCurrentIndex(0)
 
     def NextPage(self):
+        ReadWaveFromFile()
         self.animationGroup.stop()
         self.stackedWidget.setCurrentIndex(2)
 
