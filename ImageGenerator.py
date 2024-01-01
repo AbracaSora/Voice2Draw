@@ -25,9 +25,8 @@ class ImageGenerator:
                      cfg_scale=8):
         if name is None:
             name = "untitled"
-        if emotion is not None:
+        if emotion != '':
             prompt = "{{" + emotion + "}}, " + prompt
-        print(prompt)
         Data = {'prompt': "{{best_quality,ultra-detailed,masterpiece,8k wallpaper}}, " + prompt,
                 'negative_prompt': negative_prompt,
                 'sampler_index': sampler_index,
@@ -36,6 +35,32 @@ class ImageGenerator:
                 'width': self.width,
                 'height': self.height,
                 'cfg_scale': cfg_scale}
-        Response = _submit_post(self.url, Data)
+        print("prompt:" + "{{best_quality,ultra-detailed,masterpiece,8k wallpaper}}, " + prompt)
+        print("negative_prompt:" + negative_prompt)
+        Response = _submit_post(self.url + 'txt2img', Data)
+        image = Response.json()['images'][0]
+        return image, json.loads(Response.json()['info'])['seed']
+
+    def ImageGenerate(self, prompt: str, emotion: str = None, name="untitled",
+                      negative_prompt='{{nsfw,worst_quality}},mutated hands and fingers,text,title,deformed, '
+                                      'bad anatomy, disfigured, poorly drawn face, mutation, mutated, extra limb, '
+                                      'ugly, poorly drawn hands, missing limb, floating limbs, disconnected limbs, '
+                                      'malformed hands, out of focus, long neck, long body',
+                      sampler_index='Euler a', seed=-1,
+                      cfg_scale=8,image: str = None):
+        if name is None:
+            name = "untitled"
+        if emotion != '':
+            prompt = "{{" + emotion + "}}, " + prompt
+        Data = {'prompt': "{{best_quality,ultra-detailed,masterpiece,8k wallpaper}}, " + prompt,
+                'negative_prompt': negative_prompt,
+                'sampler_index': sampler_index,
+                'seed': seed,
+                'steps': self.steps,
+                'width': self.width,
+                'height': self.height,
+                'cfg_scale': cfg_scale,
+                'init_images': [image]}
+        Response = _submit_post(self.url + 'img2img', Data)
         image = Response.json()['images'][0]
         return image, json.loads(Response.json()['info'])['seed']

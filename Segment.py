@@ -27,7 +27,6 @@ class Segment:
         result = result.decode('utf-8')
         result = json.loads(result)
         keyword = []
-        print(result)
         for i in result['data']['ke']:
             keyword.append(i['word'])
         return keyword

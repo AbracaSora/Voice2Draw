@@ -11,6 +11,7 @@ class Voice2Draw:
                  path='testset/input.wav'):
         self.path = path
         self.rawString = Segment(segment)
+        self.translatedString = ''
         self.keywords = []
         self.emotion = ''
         self.prompt = ''
@@ -19,6 +20,7 @@ class Voice2Draw:
         self.name = name
         self.size = size
         self.steps = steps
+        self.mode = 'text'
 
     def setSize(self, size):
         self.size = size
@@ -30,24 +32,27 @@ class Voice2Draw:
         self.keywords.append(keywords)
 
     def generatePrompt(self):
+        self.prompt = ''
         for words in self.keywords:
             self.prompt += words.strip()
             self.prompt += ','
+        self.prompt += self.translatedString.strip()
 
-    def input(self, emotion, rawString):
-        self.emotion = emotion
+    def input(self, rawString):
         self.rawString = rawString
-        self.keywords.append(Translator('zh', 'en').translate(self.rawString).strip())
+        self.translatedString = Translator('zh', 'en').translate(self.rawString).strip()
 
     def readWave(self):
         r = Recorder()
         r.open()
         r.read(self.path)
         r.close()
+        self.emotion = Emotion(self.path)
 
     def readWaveFromFile(self, path):
         self.path = path
-        self.input(Emotion(self.path), ASR(self.path).translate())
+        self.input(ASR(self.path).translate())
+        self.emotion = Emotion(self.path)
 
     def setSeed(self, seed):
         self.seed = seed
@@ -56,11 +61,18 @@ class Voice2Draw:
         self.name = name
 
     def generateImage(self):
-        self.image, self.seed = ImageGenerator(self.size, self.steps).TextGenerate(self.prompt, emotion=self.emotion,
-                                                                                   name=self.name,
-                                                                                   seed=-1)
+        if self.mode == 'text':
+            self.image, self.seed = ImageGenerator(self.size, self.steps).TextGenerate(self.prompt,
+                                                                                       emotion=self.emotion,
+                                                                                       name=self.name,
+                                                                                       seed=self.seed)
+        elif self.mode == 'image':
+            self.image, self.seed = ImageGenerator(self.size, self.steps).ImageGenerate(self.prompt,
+                                                                                        emotion=self.emotion,
+                                                                                        name=self.name,
+                                                                                        seed=self.seed,
+                                                                                        image=self.image)
 
-    def changeImage(self):
-        self.image, self.seed = ImageGenerator(self.size, self.steps).TextGenerate(self.prompt, emotion=self.emotion,
-                                                                                   name=self.name,
-                                                                                   seed=self.seed)
+    def clear(self):
+        self.prompt = ''
+        self.keywords = []

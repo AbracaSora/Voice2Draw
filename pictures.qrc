@@ -60,4 +60,12 @@
     <file>UIpictures/working.png</file>
     <file>UIpictures/Wrong.png</file>
   </qresource>
+  <qresource prefix="emoji">
+    <file>UIpictures/emoji/平静.png</file>
+    <file>UIpictures/emoji/微笑.png</file>
+    <file>UIpictures/emoji/恐惧.png</file>
+    <file>UIpictures/emoji/悲伤.png</file>
+    <file>UIpictures/emoji/惊喜.png</file>
+    <file>UIpictures/emoji/生气.png</file>
+  </qresource>
 </RCC>

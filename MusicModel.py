@@ -1,6 +1,4 @@
-import keras.callbacks
-from keras import models, layers, optimizers, regularizers
-from keras.utils import plot_model
+from keras import models, layers, regularizers
 
 MusicModel = models.Sequential()
 MusicModel.add(layers.Conv1D(256, 5, activation='relu', input_shape=(313, 1)))

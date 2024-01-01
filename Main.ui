@@ -54,7 +54,7 @@
    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">border-image: url(:/background/UIpictures/______0x0y1800w1350y.png);</string>
+   <string notr="true"/>
   </property>
   <widget class="QPushButton" name="recordButton">
    <property name="geometry">
@@ -66,7 +66,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-image: url(:/background/UIpictures/__________80x1200y380w110h.png);</string>
+    <string notr="true">border-image: url(:/background_1/pictures_1/__________80x1200y380w110h.png);</string>
    </property>
    <property name="text">
     <string/>
@@ -82,7 +82,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-image: url(:/background/UIpictures/__________710x1200y380w110h.png);</string>
+    <string notr="true">border-image: url(:/background_1/pictures_1/__________710x1200y380w110h.png);</string>
    </property>
    <property name="text">
     <string/>
@@ -98,7 +98,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-image: url(:/background/UIpictures/__________1340x1200y380w110h.png);</string>
+    <string notr="true">border-image: url(:/background_1/pictures_1/__________1340x1200y380w110h.png);</string>
    </property>
    <property name="text">
     <string/>
@@ -107,31 +107,54 @@
   <widget class="QLabel" name="explainlabel">
    <property name="geometry">
     <rect>
-     <x>32</x>
-     <y>121</y>
-     <width>1088</width>
-     <height>621</height>
+     <x>30</x>
+     <y>130</y>
+     <width>1081</width>
+     <height>561</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>Arial</family>
-     <pointsize>36</pointsize>
+     <pointsize>22</pointsize>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-image: url(:/background/UIpictures/_________50x190y1700w970h.png);</string>
+    <string notr="true">
+border: 20px
+</string>
    </property>
    <property name="text">
-    <string>说明：
-1.占位符！
-2.占位符！
-3.占位符！
-4.占位符！
-5.占位符！
-6.占位符！</string>
+    <string>1.本系统使用百度API处理语音，基于StableDiffusion模型生成图像，
+可自定义图像效果。
+2.请录制或上传5s内的音频，系统将识别音频内容，并根据内容进行AI作画。
+3.系统将分析音频的情绪特征，绘制符合音频情绪的图像。
+4.您可以选择图像的比例、色调、风格和情绪（默认为识别出的情绪）效果。
+5.如果对于生成的图片不满意，您可以选择重新绘图，
+或是重新录制音频。
+6.如果希望保留已生成图片的大部分效果，但重新获取图片，
+您可以选择使用以图绘图。
+7.请及时保存希望保留的图片。</string>
    </property>
   </widget>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1152</width>
+     <height>864</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-image: url(:/background_1/pictures_1/______0x0y1800w1350y.png);</string>
+   </property>
+  </widget>
+  <zorder>widget</zorder>
+  <zorder>recordButton</zorder>
+  <zorder>fileButton</zorder>
+  <zorder>exitButton</zorder>
+  <zorder>explainlabel</zorder>
  </widget>
  <resources>
   <include location="pictures.qrc"/>

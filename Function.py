@@ -37,7 +37,7 @@ generateEndSignal = GenerateEndSignal()
 analyzeEndSignal = AnalyzeEndSignal()
 
 trans = Translator('zh', 'en')
-v2d = Voice2Draw(size=(610, 610), steps=120)
+v2d = Voice2Draw(size=(650, 650), steps=120)
 
 
 def ReadWave(path='testset/input.wav'):
@@ -72,31 +72,29 @@ def ExtraKeywords(keywords: str):
 
 def ImageGenerate():
     v2d.generatePrompt()
-    v2d.generateImage()
-    # generateEndSignal.generateEnd.emit(v2d.image)
+    try:
+        v2d.generateImage()
+    except ConnectionRefusedError:
+        print("ConnectionRefusedError")
+        v2d.image = None
     generateEndSignal.generateEnd.emit("GenerateEnd")
     return v2d.image
 
-
-def ImageChange():
-    v2d.generatePrompt()
-    v2d.changeImage()
-    return v2d.image
-
-
 def DataAnalysis(data: dict):
     if data['emotion'] != '自动识别':
-        v2d.appendKeywords(Dict[data['emotion']])
-    else:
-        v2d.appendKeywords(v2d.emotion)
+        v2d.emotion = Dict[data['emotion']]
     if data['style'] != '默认':
         v2d.appendKeywords(Dict[data['style']])
     if data['tone'] != '默认':
         v2d.appendKeywords(Dict[data['tone']])
     if data['prop'] == '1:1' or data['prop'] == '默认':
-        v2d.setSize((620, 620))
+        v2d.setSize((650, 650))
 
 
 def SaveImage(Path: str):
     with open(Path, 'wb') as image_file:
         image_file.write(base64.b64decode(v2d.image))
+
+
+def Clear():
+    v2d.clear()

@@ -14,7 +14,7 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">border-image: url(:/background/UIpictures/record.png);</string>
+   <string notr="true">border-image: url(:/background/UIpictures/_________0x0y1080w810h.png);</string>
   </property>
   <widget class="QPushButton" name="returnButton">
    <property name="geometry">
@@ -26,7 +26,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-image: url(:/background/UIpictures/660x630y380w110h.png);</string>
+    <string notr="true">border-image: url(:/background_1/pictures_1/________________1420x1220y380w110h.png);</string>
    </property>
    <property name="text">
     <string/>
@@ -42,7 +42,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-image: url(:/background/UIpictures/__________80x1200y380w110h.png);</string>
+    <string notr="true">border-image: url(:/background_1/pictures_1/__________80x1200y380w110h.png);</string>
    </property>
    <property name="text">
     <string/>
@@ -51,8 +51,8 @@
   <widget class="QPushButton" name="iconButton">
    <property name="geometry">
     <rect>
-     <x>282</x>
-     <y>198</y>
+     <x>310</x>
+     <y>300</y>
      <width>180</width>
      <height>193</height>
     </rect>

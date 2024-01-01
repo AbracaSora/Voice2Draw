@@ -12,6 +12,15 @@ from Function import *
 
 app = QApplication(sys.argv)
 
+re = {
+    'happy': '开心',
+    'peace': '平静',
+    'angry': '愤怒',
+    'sad': '悲伤',
+    'surprise': '惊喜',
+    'fear': '恐惧'
+}
+
 
 class ParaEndSignal(QObject):
     paraEndSignal = pyqtSignal(str)
@@ -40,7 +49,12 @@ class MainUI(QDialog):
         self.stackedWidget.setCurrentIndex(1)
 
     def ToUpload(self):
-        self.stackedWidget.setCurrentIndex(1)
+        Path = QFileDialog.getOpenFileName(self, 'Open File', '', '*.wav')
+        try:
+            ReadWaveFromFile(Path[0])
+        except FileNotFoundError:
+            return
+        self.stackedWidget.setCurrentIndex(2)
 
     def Exit(self):
         self.stackedWidget.setCurrentIndex(0)
@@ -61,7 +75,7 @@ class RecordingUI(QDialog):
 
         self.hideAnimation = QPropertyAnimation(self.iconButton, b"pos")
         self.hideAnimation.setDuration(1)
-        self.hideAnimation.setStartValue(QPoint(282, 198))
+        self.hideAnimation.setStartValue(QPoint(310, 300))
         self.hideAnimation.setEndValue(QPoint(282, 1000))
         self.animationGroup.addAnimation(self.hideAnimation)
 
@@ -71,7 +85,7 @@ class RecordingUI(QDialog):
         self.showAnimation = QPropertyAnimation(self.iconButton, b"pos")
         self.showAnimation.setDuration(1)
         self.showAnimation.setStartValue(QPoint(282, 1000))
-        self.showAnimation.setEndValue(QPoint(282, 198))
+        self.showAnimation.setEndValue(QPoint(310, 300))
         self.animationGroup.addAnimation(self.showAnimation)
 
         self.waitAnimation = QPauseAnimation(900)  # 2秒的等待动画
@@ -98,18 +112,30 @@ class ParameterUI(QDialog):
         uic.loadUi('Parameter.ui', self)
         # self.setFixedSize(1800, 1350)
 
+        recordEndSignal.recordEnd.connect(self.EmotionDisplay)
         self.stackedWidget = stackedWidget
         self.startButton.clicked.connect(self.ToGenerate)
         self.returnButton.clicked.connect(self.Back)
+
+        self.Emo.buttonClicked.connect(self.EmotionDisplay)
 
     def ToGenerate(self):
         Data = {'emotion': self.Emo.checkedButton().text(), 'style': self.Style.checkedButton().text(),
                 'tone': self.Tone.checkedButton().text(), 'prop': self.Prop.checkedButton().text()}
         DataAnalysis(Data)
+        v2d.mode = 'text'
         self.stackedWidget.setCurrentIndex(3)
 
     def Back(self):
         self.stackedWidget.setCurrentIndex(0)
+
+    def EmotionDisplay(self):
+        if self.Emo.checkedButton().text() == '自动识别':
+            ImgMap = QtGui.QPixmap('UIpictures/emoji/' + re[v2d.emotion] + '.png')
+        else:
+            ImgMap = QtGui.QPixmap('UIpictures/emoji/' + self.Emo.checkedButton().text() + '.png')
+        self.emojiDisplay.setPixmap(ImgMap.scaled(self.emojiDisplay.width(), self.emojiDisplay.height()))
+        self.emojiDisplay.show()
 
 
 class WorkingUI(QDialog):
@@ -126,7 +152,7 @@ class WorkingUI(QDialog):
         removeAnimation = []
 
         positions = [QPoint(65, 512), QPoint(256, 512), QPoint(480, 512), QPoint(698, 512), QPoint(928, 512)]
-        for i in range(4):
+        for i in range(5):
             iconButton = QPushButton(self)
             iconButton.setGeometry(positions[i].x(), positions[i].y(), 116, 135)
             iconButton.setStyleSheet("background-color: red;")
@@ -144,7 +170,7 @@ class WorkingUI(QDialog):
             moveAnimation.setEndValue(positions[i])
             removeAnimation.append(moveAnimation)
 
-        for i in range(4):
+        for i in range(5):
             self.animationGroup.addAnimation(removeAnimation[i])
 
         waitAnimation = QPauseAnimation(700)  # 7ms 的等待动画
@@ -181,22 +207,27 @@ class ResultUI(QDialog):
         self.imageLabel.setGeometry(0, 140, v2d.size[0], v2d.size[1])
         self.imageLabel.setPixmap(ImgMap.scaled(self.imageLabel.width(), self.imageLabel.height()))
         self.imageLabel.show()
+        EmojiMap = QtGui.QPixmap('UIpictures/emoji/' + re[v2d.emotion] + '.png')
+        self.emojiDisplay.setPixmap(EmojiMap.scaled(self.emojiDisplay.width(), self.emojiDisplay.height()))
+        self.emojiDisplay.show()
 
     def Save(self):
-        Path = QFileDialog.getSaveFileName(self, 'Save File', '', '*.png')
-        print(Path[0])
+        Path = QFileDialog.getSaveFileName(self, 'Save File', 'untitled', '*.png')
         SaveImage(Path[0])
         self.stackedWidget.setCurrentIndex(0)
 
     def Back(self):
-        v2d.keywords = []
+        Clear()
         self.stackedWidget.setCurrentIndex(0)
 
     def Change(self):
+        v2d.seed = -1
         self.stackedWidget.setCurrentIndex(2)
 
     def Next(self):
-        self.stackedWidget.setCurrentIndex(4)
+        v2d.mode = 'image'
+        v2d.seed = -1
+        self.stackedWidget.setCurrentIndex(3)
 
 
 def show_MainUI():
